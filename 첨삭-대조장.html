@@ -1,0 +1,487 @@
+<title>2709 첨삭 대조장</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;700;900&family=Nanum+Pen+Script&display=swap">
+<style>
+:root {
+  --paper: #fbfaf7; --sheet: #ffffff; --ink: #171512; --rule: #23201b;
+  --pen: #c22a1e; --pen-soft: rgba(194, 42, 30, 0.08); --pen-line: rgba(194, 42, 30, 0.55);
+  --chip: #2b4a73; --chip-soft: rgba(43, 74, 115, 0.08);
+  --muted: #6b655c; --hole: #8a8378;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: "Noto Serif KR", "Apple Myungjo", serif; font-size: 15px; line-height: 1.85;
+}
+.wrap { max-width: 1060px; margin: 0 auto; padding: 40px 20px 80px; }
+
+/* ===== 표지 헤더 — 시험지 머리 ===== */
+.masthead { background: var(--sheet); border: 1px solid var(--rule); padding: 26px 30px 20px; position: relative; }
+.gyosi { position: absolute; left: 26px; top: 30px; border: 2.2px solid var(--rule); border-radius: 999px;
+  padding: 3px 16px; font-weight: 900; font-size: 15px; font-family: "Noto Sans KR", sans-serif; }
+.mast-top { text-align: center; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; }
+.mast-title { text-align: center; font-size: 40px; font-weight: 900; letter-spacing: 0.42em; text-indent: 0.42em;
+  font-family: "Noto Sans KR", sans-serif; margin: 6px 0 2px; }
+.mast-meta { text-align: center; font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule);
+  margin-top: 14px; padding-top: 10px; }
+.mast-note { max-width: 620px; margin: 14px auto 0; font-size: 13.5px; line-height: 1.8; color: var(--ink); }
+.mast-note b { color: var(--pen); }
+
+/* 총평 스트립 */
+.tally { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 34px; font-family: "Noto Sans KR", sans-serif; }
+.tally .cell { flex: 1 1 150px; background: var(--sheet); border: 1px solid var(--rule); padding: 12px 16px; }
+.tally .num { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.tally .lbl { font-size: 11.5px; color: var(--muted); letter-spacing: 0.08em; }
+.tally .num.pen { color: var(--pen); }
+
+/* ===== 문항 시트 ===== */
+.entry { background: var(--sheet); border: 1px solid var(--rule); margin-bottom: 30px; position: relative; }
+.entry-hd { display: flex; align-items: center; gap: 12px; padding: 10px 18px;
+  border-bottom: 1px solid var(--rule); font-family: "Noto Sans KR", sans-serif; flex-wrap: wrap; }
+.slotbadge { border: 1.8px solid var(--rule); padding: 2px 12px; font-weight: 900; font-size: 14px; white-space: nowrap; }
+.unitlbl { font-size: 12.5px; color: var(--muted); }
+.meter { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.meter .cells { display: flex; gap: 3px; }
+.meter .c { width: 22px; height: 10px; border: 1px solid var(--rule); }
+.meter .c.on { background: var(--pen); border-color: var(--pen); }
+.meter .c.half { background: linear-gradient(90deg, var(--pen) 50%, transparent 50%); border-color: var(--pen); }
+.meter .txt { font-size: 12px; font-weight: 700; }
+.stamp { font-family: "Nanum Pen Script", cursive; font-size: 30px; color: var(--pen);
+  border: 2.5px solid var(--pen); border-radius: 50%; width: 46px; height: 46px; line-height: 42px;
+  text-align: center; transform: rotate(-8deg); flex: none; }
+.stamp.hole { color: var(--hole); border-color: var(--hole); }
+
+.entry-body { display: grid; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); }
+@media (max-width: 820px) { .entry-body { grid-template-columns: 1fr; } .prob { border-right: none !important; border-bottom: 1px solid var(--rule); } }
+
+/* 왼쪽: 기준(기출) 문항 — 시험지 조판 */
+.prob { padding: 20px 22px 24px; border-right: 1px solid var(--rule); position: relative; }
+.prob .src { font-size: 11px; color: var(--muted); font-family: "Noto Sans KR", sans-serif; margin-bottom: 8px; }
+.prob p { margin: 0 0 7px; }
+.pnum { font-weight: 900; font-size: 16px; margin-right: 6px; }
+.condbox { border: 1px solid var(--rule); padding: 8px 14px; margin: 8px 0 10px; }
+.condbox p { margin: 3px 0; }
+.pts { font-weight: 600; }
+/* 첨삭 마커 — 조건 스팬 */
+.mk { position: relative; border-bottom: 2px solid var(--pen-line); padding-bottom: 1px; }
+.mk sup { font-family: "Nanum Pen Script", cursive; color: var(--pen); font-size: 15px; font-weight: 400;
+  margin-left: 2px; }
+
+/* 오른쪽: 첨삭 레일 */
+.rail { padding: 18px 20px 22px; background: linear-gradient(0deg, var(--pen-soft), var(--pen-soft)), var(--sheet); }
+.rail-h { font-family: "Nanum Pen Script", cursive; color: var(--pen); font-size: 24px; margin: 0 0 10px; }
+.note { margin-bottom: 16px; }
+.note .n-h { font-family: "Nanum Pen Script", cursive; color: var(--pen); font-size: 21px; line-height: 1.4; margin-bottom: 4px; }
+.note .n-h .no { display: inline-block; border: 1.6px solid var(--pen); border-radius: 50%;
+  width: 22px; height: 22px; line-height: 20px; text-align: center; font-size: 15px; margin-right: 6px; }
+.cover { border: 1px solid var(--rule); background: var(--sheet); padding: 8px 12px; margin: 4px 0 0 28px;
+  font-size: 13px; line-height: 1.75; }
+.cover .chip { display: inline-block; background: var(--chip-soft); color: var(--chip); border: 1px solid var(--chip);
+  font-family: "Noto Sans KR", sans-serif; font-size: 11px; font-weight: 700; padding: 0 8px; border-radius: 3px;
+  margin-right: 6px; vertical-align: 1px; white-space: nowrap; }
+.cover em { font-style: normal; background: var(--pen-soft); padding: 0 2px; }
+.miss { margin: 4px 0 0 28px; font-family: "Nanum Pen Script", cursive; color: var(--hole); font-size: 20px; }
+.verdictline { margin-top: 6px; font-family: "Nanum Pen Script", cursive; font-size: 22px; color: var(--pen); }
+
+/* 결론 시트 */
+.close { background: var(--sheet); border: 1px solid var(--rule); padding: 24px 28px; }
+.close h2 { font-family: "Noto Sans KR", sans-serif; font-size: 17px; letter-spacing: 0.1em; margin: 0 0 12px;
+  border-bottom: 1px solid var(--rule); padding-bottom: 8px; }
+.close p { margin: 0 0 10px; font-size: 14.5px; max-width: 68ch; }
+.close .pen-final { font-family: "Nanum Pen Script", cursive; color: var(--pen); font-size: 26px; margin-top: 14px; }
+table.sum { border-collapse: collapse; font-family: "Noto Sans KR", sans-serif; font-size: 12.5px; margin: 8px 0 14px; width: 100%; }
+table.sum th, table.sum td { border: 1px solid var(--rule); padding: 5px 10px; text-align: center; font-variant-numeric: tabular-nums; }
+table.sum th { background: var(--paper); font-weight: 700; }
+table.sum td.l { text-align: left; }
+.scroll { overflow-x: auto; }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <span class="gyosi">첨삭</span>
+    <div class="mast-top">2027학년도 9월 모의평가 실물 × 2709 예상 생성 문항 대조</div>
+    <div class="mast-title">수학 영역</div>
+    <div class="mast-meta">기준 문항 = 실물 기출(상급 15문항) · 대응 = 10세트 460문항 전체에서 일대다 매칭 · 2026-09-02</div>
+    <p class="mast-note">읽는 법 — 문항 속 <b>조건 하나하나는 개념을 바라보는 하나의 관점</b>이다. 그래서 대응은 일대일이 아니라 <b>일대다</b>: 기출 문항의 조건 <span class="mk">밑줄<sup>①</sup></span>마다 그 관점을 커버하는 생성 문항(들)을 빨간펜으로 잇고, 조건 커버 합집합의 크기를 그 문항의 커버리지로 센다. 실물 문항은 요지 전사(출처: 한국교육과정평가원 2027학년도 9월 모의평가), 생성 문항은 원문 발췌.</p>
+  </header>
+
+  <div class="tally">
+    <div class="cell"><div class="num">15</div><div class="lbl">기준 기출 문항 (상급)</div></div>
+    <div class="cell"><div class="num">44</div><div class="lbl">분해된 조건(관점) 수</div></div>
+    <div class="cell"><div class="num pen">27.5</div><div class="lbl">생성 문항이 커버한 조건</div></div>
+    <div class="cell"><div class="num pen">63%</div><div class="lbl">조건 단위 커버리지</div></div>
+    <div class="cell"><div class="num">4</div><div class="lbl">완전 미커버 (재고 구멍)</div></div>
+  </div>
+
+  <!-- ============ 공통 13 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">공통 13</span><span class="unitlbl">수학Ⅱ · 적분 · 4점 · 합답형</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c on"></span><span class="c"></span></span><span class="txt">2/3</span></span>
+      <span class="stamp">◎</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">13.</b> <span class="mk">f(0)=0, ∫₀²f(x)dx=4인 이차함수 f<sup>①</sup></span>에 대하여, <span class="mk">∫|f(x)|dx와 |∫f(x)dx|의 대소·일치 여부<sup>②</sup></span>에 관한 <span class="mk">보기 ㄱ·ㄴ·ㄷ의 참·거짓<sup>③</sup></span>을 판정한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>적분 조건으로 함수족을 좁히는 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 공통15</span>「(가) ∫ₚ^{p+3}|f|dx ≠ |∫ₚ^{p+3}f dx| 가 되도록 하는 p의 범위는 0&lt;p&lt;3」 — <em>적분 부등식 조건이 삼차함수를 결정</em>하는 같은 방향.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>|∫f| vs ∫|f| — 부호 변화 논증, 핵심 장치 일치</div>
+          <div class="cover"><span class="chip">세트1 공통15</span><span class="chip">동계 6문항</span>절댓값 적분과 적분의 절댓값이 갈라지는 조건 = <em>구간 안에서 f의 부호가 바뀐다</em> — 실물 ㄱㄴㄷ이 묻는 바로 그 성질을 문항 전체의 뼈대로 사용.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>ㄱㄴㄷ 합답형 형식 — 없음</div>
+          <div class="miss">합답형 양식의 생성 문항이 은행에 없음 (양식 갭)</div></div>
+        <div class="verdictline">→ 발상의 심장(②)을 정확히 만들어 두고 있었다. 양식만 비었음.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 공통 14 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">공통 14</span><span class="unitlbl">수학Ⅰ · 수열 · 4점 · 킬러 (규칙귀납형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c"></span><span class="c on"></span></span><span class="txt">2/3</span></span>
+      <span class="stamp">○</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">14.</b> <span class="mk">자연수 여부를 판별하는 조각함수 f를 문제 안에서 새로 정의<sup>①</sup></span>하고, 합 Σ f(∛k)/5f(k)에 대하여 <span class="mk">부분합이 자연수가 되는 조건<sup>②</sup></span>을 만족시키는 <span class="mk">n ≤ 300의 개수를 센다<sup>③</sup></span>. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>“문제 안에서 처음 정의되는 규칙” — 신유형 베팅 적중</div>
+          <div class="cover"><span class="chip">세트1 공통20 · N1</span>「자연수 k에서 출발하여 f를 계속 적용하여 … <em>f를 적용한 횟수를 t(k)라 한다</em>」 — 새 규칙을 정의·귀납시키는 규칙귀납 관점. 경로 지도가 “희귀 재방문” 좌표로 지목해 발명해 둔 계열이 실물에 등장.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>부분합의 정수성(수론적 은닉 조건) — 없음</div>
+          <div class="miss">세제곱수 판별·자연수성 조건을 다루는 생성 문항 없음</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>조건 만족 대상의 개수 열거 관점 — 있음</div>
+          <div class="cover"><span class="chip">공통22 계열 10문항</span>「aₖ = 9를 만족시키는 <em>자연수 k의 개수를 구하시오</em>」 — 점화 규칙을 역추적하며 해 개수를 세는 동일한 요구.</div></div>
+        <div class="verdictline">→ 규칙귀납이라는 관점 자체를 예비해 둔 게 값지다. 수론 양념은 빈칸.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 공통 15 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">공통 15</span><span class="unitlbl">수학Ⅱ · 함수의 극한 · 4점 · 킬러 (역방향형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c"></span><span class="c on"></span></span><span class="txt">2/3</span></span>
+      <span class="stamp">◎</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">15.</b> 최고차항 계수 1인 이차함수 f에 대하여 <span class="mk">어떤 극한이 존재하도록 하는 실수 t의 집합이 정확히 {t | t ≥ 3/2}<sup>①</sup></span>가 되게 한다. <span class="mk">분모 f(x)+f(x−t)의 근 배치가 t에 따라 바뀌는 경계<sup>②</sup></span>에서 <span class="mk">f가 역으로 결정<sup>③</sup></span>되고, f(2)를 구한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">③</span>“극한의 존재를 조건으로 함수를 역설계” — 서명·프레임 일치</div>
+          <div class="cover"><span class="chip">세트1 공통11</span>「lim f(x+1)/( x(f(x)−4) ) 의 값이 <em>a=0일 때 존재하고 a=2일 때 존재하지 않는다</em>. f(3)은?」 — 존재/부존재 자체가 조건인 역방향형+은닉조건형, 실물과 같은 조합.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>분모의 근 배치가 존재성을 가르는 은닉 장치 — 있음</div>
+          <div class="cover"><span class="chip">세트1 공통11</span>분모 x(f(x)−4)의 <em>근이 분자의 근과 겹치는가</em>로 존재가 갈리는 동일 장치.</div></div>
+        <div class="note"><div class="n-h"><span class="no">①</span>조건이 “매개 t의 연속 집합”으로 주어지는 관점 — 없음</div>
+          <div class="miss">우리 것은 이산 두 점(a=0, a=2), 실물은 반직선 {t≥3/2} — 경계 논증의 연속화가 빈칸</div></div>
+        <div class="verdictline">→ 같은 문법, 실물이 한 옥타브 위. 이산→연속 확장 연산이 다음 과제.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 공통 20 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">공통 20</span><span class="unitlbl">수학Ⅰ · 삼각함수 · 4점 · 빈칸 과정형 (규칙전환형+조건위계형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c half"></span><span class="c on"></span></span><span class="txt">2.5/3</span></span>
+      <span class="stamp">◎</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">20.</b> <span class="mk">y=sin x와 y=−k cos x의 교점들<sup>①</sup></span>로 만든 도형에서 <span class="mk">넓이의 비 14:5라는 기하 조건을 삼각방정식으로 전환<sup>②</sup></span>해 상수를 결정하는 <span class="mk">과정의 빈칸 (가)(나)(다)를 채운다<sup>③</sup></span>. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>두 곡선 교점을 축으로 조건을 쌓는 관점 — 있음</div>
+          <div class="cover"><span class="chip">공통20 계열 9문항</span>「f(x)=bˣ와 g(x)=−log_b x의 그래프가 제1사분면에서 만나는 점 P(α,β)」 — <em>교점 좌표가 조건 위계의 뿌리</em>가 되는 동일 구성. 서명(규칙전환형+조건위계형)도 실물과 완전 일치.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>(가)(나)(다) 빈칸 과정추론 양식 — 형식까지 일치</div>
+          <div class="cover"><span class="chip">세트9 공통20</span>「…m = β/α = <em>(가)</em>이다. β⁶ = mαβ⁵ = m이므로 β = <em>(나)</em>… g(m) = <em>(다)</em>」 — 유도 과정을 빈칸으로 뚫는 평가원 양식 재현.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>기하량(넓이비)→대수 전환 — 절반</div>
+          <div class="cover"><span class="chip">세트9 공통20</span>기울기·거듭제곱 관계로의 전환은 있으나 <em>넓이비</em>라는 기하량은 아님. 단원도 삼각↔지수로그로 어긋남.</div></div>
+        <div class="verdictline">→ 구조·양식은 그대로 맞고, 옷(단원·소재)만 다르게 입혔다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 공통 21 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">공통 21</span><span class="unitlbl">수학Ⅱ · 미분 · 4점 · 킬러 (조건위계형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c half"></span><span class="c on"></span></span><span class="txt">2.5/3</span></span>
+      <span class="stamp">◎</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">21.</b> <span class="mk">(가) 실근 2개를 갖는 삼차함수 f의 근 구조 제약<sup>①</sup></span> 위에 <span class="mk">(나) f로 만든 조각함수 g와 절댓값 삼차 |(x−1)(x−a)(x−4+a)|의 합이 미분가능<sup>②</sup></span>이 얹힌다. <span class="mk">꺾임이 상쇄되거나 중근이어야 한다는 은닉 케이스<sup>③</sup></span>로 a와 f(0)의 최대·최소를 확정한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭 — 두 문항의 합집합이 하나를 덮는 일대다 표본</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>삼차함수 근 구조를 조건으로 제약하는 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 공통21</span>「f(α) = f′(t) − 5t² + 5 를 만족시키는 α의 최댓값 g(t)가 <em>t=3에서만 불연속</em>」 — 불연속 위치 조건이 삼차 f의 극값·근 구조를 역으로 조인다.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②③</span>절댓값 함수의 미분가능성 → 꺾임 상쇄·중근 케이스 — 있음 (다른 단원에서)</div>
+          <div class="cover"><span class="chip">미적분30 계열 10문항</span>「g(x) = (x(f(x))²)^{1/3} 이 실수 전체에서 <em>미분가능</em>하고 …에서만 …」 — 미분가능성이 성립하려면 <em>근의 중복도가 맞아떨어져야 한다</em>는 동일한 은닉 케이스 논증. 실물은 이 관점을 절댓값으로, 우리는 세제곱근으로 구현.</div></div>
+        <div class="verdictline">→ 관점은 다 있었다: ①은 공통21 계열이, ②③은 미적30 계열이 나눠 들고 있었음.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 공통 22 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">공통 22</span><span class="unitlbl">수학Ⅰ · 지수로그 · 4점 · 킬러 (은닉조건형+조건위계형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c on"></span><span class="c"></span></span><span class="txt">2/3</span></span>
+      <span class="stamp">○</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">22.</b> 지수·이차 곡선쌍과 로그·이차 곡선쌍이 <span class="mk">직사각형 ABCD의 네 꼭짓점을 지나도록 구성<sup>①</sup></span>한다. <span class="mk">두 곡선쌍이 사실은 평행이동된 역함수 대칭(은닉)<sup>②</sup></span>임을 발견하면 대응점 조건이 붕괴되며 <span class="mk">a³ = q/p가 결정<sup>③</sup></span>된다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">②</span>지수↔로그 역함수 대칭을 지렛대로 쓰는 관점 — 있음</div>
+          <div class="cover"><span class="chip">공통20 계열</span>「f(x)=bˣ, g(x)=−log_b x … α = log_b β, β = −log_b α」 — <em>서로 로그·지수로 얽힌 두 좌표의 대칭 관계식</em>이 풀이의 축. 실물의 은닉 대칭과 같은 개념 관점.</div></div>
+        <div class="note"><div class="n-h"><span class="no">①</span>그래프 위 점들로 도형을 구성하는 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트2 공통15</span>「y=log₂x 위의 점 Aₙ … 점 Bₙ과 x축 위의 점 Cₙ이 (가)(나)를 만족」 — 곡선 위 점열로 기하 조건을 쌓는 구성.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>대응점 붕괴 → 유리수 지수 결정 — 없음</div>
+          <div class="miss">두 조건이 하나로 접히는 “붕괴” 순간을 담은 문항은 없음</div></div>
+        <div class="verdictline">→ 부품은 둘 다 있는데 조립(붕괴 설계)이 없었다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 확통 28 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">확통 28</span><span class="unitlbl">확률과 통계 · 확률 · 4점 · 킬러 (역방향형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c on"></span><span class="c half"></span></span><span class="txt">2.5/3</span></span>
+      <span class="stamp">◎</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">28.</b> A,A,A,B,B,B 카드 6장을 놓고 <span class="mk">주사위 눈에 따라 인접한 두 카드를 교환하는 시행<sup>①</sup></span>을 4회 반복한다. <span class="mk">“4회 후 배열이 처음과 같다”는 결과가 조건<sup>②</sup></span>으로 주어질 때, <span class="mk">3번째 눈이 6이었을 조건부확률<sup>③</sup></span>을 구한다. 같은 문자끼리의 교환은 배열을 바꾸지 않는다는 은닉 성질이 열쇠. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>카드 상태 + 주사위 눈이 조작을 정하는 시행 설계 — 있음</div>
+          <div class="cover"><span class="chip">세트1 확통28</span>「카드 6장 … 주사위를 한 번 던져 나온 눈의 수가 k일 때, k가 홀수이면 k 이하의 카드를, 짝수이면 k 이상의 카드를 모두 뒤집는다」 — <em>눈이 상태 조작을 결정하는 같은 시행 문법</em>.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>“반복 후 원상 복귀”를 결과 조건으로 거는 역방향 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 확통28</span>「이 시행을 <em>4번 반복한 후</em> 6장의 카드가 <em>처음과 같은 상태</em>로 놓여 있을 확률은?」 — 복귀 조건과 반복 횟수(4회)까지 그대로.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>복귀를 조건으로 한 조건부확률 층 — 절반</div>
+          <div class="cover"><span class="chip">확통 조건부 계열</span>「곱이 홀수일 때 합이 17일 확률」 등 조건부 층은 다른 문항에 있음 — <em>복귀 조건과 결합만 안 됨</em>.</div></div>
+        <div class="verdictline">→ 사실상 같은 문제의 한 층 아래 버전을 만들어 놓고 있었다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 확통 29 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">확통 29</span><span class="unitlbl">확률과 통계 · 경우의 수 · 4점 (조건위계형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c half"></span><span class="c"></span><span class="c"></span></span><span class="txt">0.5/3</span></span>
+      <span class="stamp hole">✗</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">29.</b> <span class="mk">a+b+c+d=14인 자연수 분할<sup>①</sup></span> 위에 <span class="mk">부등식 제약 c&lt;d², 10a≥d<sup>②</sup></span>를 얹고, <span class="mk">경계에서만 작동하는 함정 조건을 간파해 순서쌍을 열거<sup>③</sup></span>한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>합 분할 방정식 관점 — 반쪽</div>
+          <div class="cover"><span class="chip">확통29 계열</span>주사위 눈의 <em>합이 특정값</em>인 경우 세기 — 합 조건은 있으나 중복조합 분할 프레임이 아님.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②③</span>부등식 제약·함정 경계 — 없음</div>
+          <div class="miss">분할+부등식 계열 생성 문항 0건 — 사전 경고된 재고 구멍</div></div>
+        <div class="verdictline">→ 못 맞힌 게 아니라 안 만든 자리. 다음 사이클 보충 1순위.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 확통 30 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">확통 30</span><span class="unitlbl">확률과 통계 · 통계 · 4점 (규칙전환형)</span>
+      <span class="meter"><span class="cells"><span class="c"></span><span class="c"></span><span class="c"></span></span><span class="txt">0/3</span></span>
+      <span class="stamp hole">✗</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">30.</b> 0,1,2에서 <span class="mk">복원추출 5회의 표본평균 X̄<sup>①</sup></span>에 대하여 <span class="mk">Σk²·P(X̄=k/5)를 합 5X̄의 적률 E[(5X̄)²]로 재해석<sup>②</sup></span>하면 <span class="mk">분산 공식으로 즉시 계산<sup>③</sup></span>된다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①②③</span>통계 상급 관점 전체 — 전무</div>
+          <div class="miss">10세트에 통계 상급 문항 0건 (은행 자체가 통계 상급 공백 — 사전등록 문서에 경고된 그 자리)</div></div>
+        <div class="verdictline">→ 완전 공백. 표본분포·적률 관점의 전용 생성이 필요하다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 미적 28 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">미적 28</span><span class="unitlbl">미적분 · 미분법 · 4점 · 킬러 (역방향형+규칙전환형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c on"></span><span class="c half"></span></span><span class="txt">2.5/3</span></span>
+      <span class="stamp">○</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">28.</b> 원 위의 할선이 만드는 <span class="mk">도형의 넓이 t를 독립변수로, 각 f(t)를 종속변수로 정의<sup>①</sup></span>한다. 실제 풀이는 <span class="mk">각을 매개로 t를 표현한 뒤 역함수 미분<sup>②</sup></span>으로 f′(k)를 구하며, <span class="mk">넓이의 부채꼴·삼각형 분해<sup>③</sup></span>가 전환 장치다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>기하량을 매개변수로 함수를 정의하는 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 미적28</span>「직선 y=t가 두 곡선과 만나는 점 P, Q … y좌표를 <em>f(t), g(t)</em>라 할 때」 — 매개 t로 정의된 암묵 함수.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>정의 방향을 뒤집어 미분하는 역함수 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 미적28</span>e^{3x} 관계식을 <em>x에 대해 역으로 풀어 f′, g′를 얻는</em> 동일한 방향 반전 + 극한 결합.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>도형 분해(부채꼴·삼각형) — 절반</div>
+          <div class="cover"><span class="chip">세트2 미적28</span>「정사각형 ABCD … 선분 DE를 지름으로 하는 원과 직선 BE … ∠EBC=θ」 — 도형·각 분해는 있으나 넓이-각 연결은 아님.</div></div>
+        <div class="verdictline">→ 해석 장치는 겹치고, 기하 포장이 달랐다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 미적 29 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">미적 29</span><span class="unitlbl">미적분 · 수열의 극한 · 4점 (은닉조건형+조건위계형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c on"></span><span class="c"></span></span><span class="txt">2/3</span></span>
+      <span class="stamp">○</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">29.</b> <span class="mk">|aₙ| 크기에 따라 정의가 갈리는 케이스 수열 bₙ<sup>①</sup></span>에 대해 <span class="mk">급수 합 12의 수렴 조건이 “꼬리는 등비”라는 은닉<sup>②</sup></span>을 강제하고, (b₂)²=36b₃ 위계로 <span class="mk">몇 항까지 케이스가 바뀌는지 확정<sup>③</sup></span>한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>부호·크기 케이스가 항마다 갈리는 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 미적29</span>「|Σ bₙ·<em>cos(aₙπ)</em>| 의 최솟값」 — cos(aₙπ)=±1이 <em>정수 aₙ의 홀짝 케이스</em>로 갈리는 같은 장치.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>급수 수렴을 조건으로 공비를 조이는 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 미적29</span>「급수 Σbₙ이 <em>수렴할 때</em>」 — 수렴 조건이 등비수열의 공비 범위를 결정.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>“어느 항에서 케이스가 꺾이는가” 결정 — 없음</div>
+          <div class="miss">문턱 항 결정 논증은 미생성</div></div>
+        <div class="verdictline">→ 케이스·수렴 두 관점 확보, 문턱 결정만 비어 있다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 미적 30 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">미적 30</span><span class="unitlbl">미적분 · 적분법 · 4점 · 킬러 (규칙전환형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c half"></span><span class="c"></span><span class="c"></span></span><span class="txt">0.5/3</span></span>
+      <span class="stamp hole">✗</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">30.</b> f = 2^{2x+½cosπx}의 <span class="mk">역함수 g의 정적분을 역함수 적분 공식으로 f의 적분으로 전환<sup>①</sup></span>하고, <span class="mk">치환 시 지수가 상쇄되는 은닉 구조<sup>②</sup></span>가 발동해 <span class="mk">두 적분이 결합·소거<sup>③</sup></span>된다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>적분 관계식을 조건으로 쓰는 관점 — 반쪽</div>
+          <div class="cover"><span class="chip">세트2 공통21 · N3</span>「A(t)=∫₀ᵗ f(x)dx, B(t)=∫₀ᵗ f(t−x)dx …」 — <em>두 적분 사이의 항등 관계</em>를 조건으로 쓰는 관점의 원형은 존재(수학Ⅱ 수준).</div></div>
+        <div class="note"><div class="n-h"><span class="no">②③</span>역함수 적분·지수 상쇄 — 없음</div>
+          <div class="miss">적분법 상급(치환·역함수 적분) 생성 문항 0건 — 사전 경고된 재고 구멍</div></div>
+        <div class="verdictline">→ 관점의 씨앗(N3)은 있었으나 미적분 화력으로 키우지 못했다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 기하 28 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">기하 28</span><span class="unitlbl">기하 · 공간도형과 공간좌표 · 4점 · 킬러 (조건위계형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c"></span><span class="c"></span><span class="c"></span></span><span class="txt">0/3</span></span>
+      <span class="stamp hole">✗</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">28.</b> 구 위의 네 점에 대해 <span class="mk">OD∥평면ABC와 5개 등변 조건<sup>①</sup></span>이 <span class="mk">정삼각형+대칭 위치를 결정<sup>②</sup></span>하고, <span class="mk">이면각의 cos으로 정사영 넓이<sup>③</sup></span>를 구한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①②③</span>공간도형 관점 전체 — 전무</div>
+          <div class="miss">6모(앵커)에 공간도형이 없었고, 앵커 동형 파이프라인은 앵커에 없는 단원을 만들 수 없다 — 갭을 예측하고도 채우지 못한 구조적 사각지대</div></div>
+        <div class="verdictline">→ 이 한 칸이 파이프라인 설계 교훈의 전부: 갭 슬롯은 앵커 밖에서 만들어야 한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 기하 29 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">기하 29</span><span class="unitlbl">기하 · 이차곡선 · 4점 (조건위계형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c on"></span><span class="c half"></span></span><span class="txt">2.5/3</span></span>
+      <span class="stamp">◎</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">29.</b> <span class="mk">쌍곡선(거리 차)과 초점을 공유하는 타원(거리 합)의 정의를 겹쳐 연립<sup>①②</sup></span>하고, <span class="mk">∠APF′=∠APC가 숨긴 평행·이등변 성질<sup>③</sup></span>로 삼각형 ACP의 둘레를 상수화한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>두 이차곡선의 정의식 연립 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 기하26 계열 6문항</span>「쌍곡선 C₁ … <em>초점이 F이고 꼭짓점이 A인 포물선</em> C₂, 준선 l … 교점의 y좌표가 같을 때」 — 두 곡선의 정의(거리 차·거리 등식)를 <em>한 점에서 연립</em>시키는 동일 문법.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>초점·꼭짓점 공유 구성 — 있음</div>
+          <div class="cover"><span class="chip">같은 계열</span>초점 F를 두 곡선이 나눠 갖는 구성 그 자체.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>각 조건 → 평행/반사 은닉 — 절반</div>
+          <div class="cover"><span class="chip">세트2 기하29</span>「원 위의 점 P에 대하여 직선 F′P가 타원과 만나는 점」 — 보조 도형 경유는 있으나 각 조건의 반사 성질은 아님.</div></div>
+        <div class="verdictline">→ 연립·공유의 뼈대 일치. 각(角) 한 스푼이 실물의 신선함.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 기하 30 ============ -->
+  <section class="entry">
+    <div class="entry-hd">
+      <span class="slotbadge">기하 30</span><span class="unitlbl">기하 · 평면벡터 · 4점 · 킬러 (규칙전환형+은닉조건형)</span>
+      <span class="meter"><span class="cells"><span class="c on"></span><span class="c on"></span><span class="c on"></span></span><span class="txt">3/3</span></span>
+      <span class="stamp">◎</span>
+    </div>
+    <div class="entry-body">
+      <div class="prob">
+        <div class="src">실물 요지 전사</div>
+        <p><b class="pnum">30.</b> 사다리꼴에서 <span class="mk">내적 등식 AB⃗·DC⃗ = AD⃗·BC⃗가 도형의 형상을 고정(은닉)<sup>①</sup></span>하고, <span class="mk">XA⃗·XD⃗ = XB⃗·XC⃗ = 0 → “X는 두 지름원의 교점”이라는 자취 전환<sup>②</sup></span>으로 유한개의 X를 얻어 <span class="mk">모든 X에 대한 AD⃗·AX⃗의 합<sup>③</sup></span>을 구한다. [4점]</p>
+      </div>
+      <div class="rail">
+        <div class="rail-h">첨삭 — 가장 강한 커버 사례</div>
+        <div class="note"><div class="n-h"><span class="no">①</span>내적 등식으로 미지의 점 위치를 고정하는 관점 — 있음</div>
+          <div class="cover"><span class="chip">세트1 기하29 계열 9문항</span>「BA⃗·BC⃗ = CB⃗·CD⃗, AC⃗·AD⃗ = DA⃗·DB⃗ 를 만족」 — <em>내적 등식 두 개가 점 D를 고정</em>하는 동일 문법. 서명(규칙전환형+은닉조건형)도 실물과 두 요소 모두 일치.</div></div>
+        <div class="note"><div class="n-h"><span class="no">②</span>내적 조건 → 지름원 자취 전환 — 있음</div>
+          <div class="cover"><span class="chip">같은 계열</span>「<em>선분 AB를 지름으로 하는 원</em> 위를 움직이는 점 X」 — 실물이 숨긴 “XA⃗·XD⃗=0 ⇔ 지름원 위” 관점을 우리는 명시형으로 이미 사용.</div></div>
+        <div class="note"><div class="n-h"><span class="no">③</span>자취 위 X에 대한 내적값 집계 — 있음</div>
+          <div class="cover"><span class="chip">같은 계열</span>「DX⃗·BC⃗의 <em>최댓값 M, 최솟값 m … |M×m|</em>」 — 실물은 “합”, 우리는 “최대·최소 곱”: 집계 방식만 다른 동일 요구.</div></div>
+        <div class="verdictline">→ 세 관점 전부 보유. 실물과의 차이는 자취를 숨겼는가(실물) 드러냈는가(우리)뿐.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 결론 ============ -->
+  <section class="close">
+    <h2>총평 — 커버리지의 사이즈</h2>
+    <div class="scroll"><table class="sum">
+      <tr><th>기준 문항</th><th>공13</th><th>공14</th><th>공15</th><th>공20</th><th>공21</th><th>공22</th><th>확28</th><th>확29</th><th>확30</th><th>미28</th><th>미29</th><th>미30</th><th>기28</th><th>기29</th><th>기30</th></tr>
+      <tr><td class="l">조건 커버</td><td>2/3</td><td>2/3</td><td>2/3</td><td>2.5/3</td><td>2.5/3</td><td>2/3</td><td>2.5/3</td><td>0.5/3</td><td>0/3</td><td>2.5/3</td><td>2/3</td><td>0.5/3</td><td>0/3</td><td>2.5/3</td><td>3/3</td></tr>
+    </table></div>
+    <p>합계 <b>27.5 / 44 조건 ≈ 63%</b>. 일대일 최근접만 세던 이전 분석(~70% 문항 단위)보다 해상도가 높다 — 조건(관점) 단위로 보면 <b>한 기출을 여러 생성 문항이 나눠 덮는 일대다 구조</b>가 실제 커버의 모습이다. 공통21이 표본: 근 구조 제약은 공통21 계열이, 미분가능성 상쇄 케이스는 미적30 계열이 각각 들고 있었다.</p>
+    <p>미커버 조건은 두 종류뿐이다. ① <b>재고 구멍</b>(통계 상급 · 분할 경우의수 · 적분법 상급 · 공간도형 — 전부 사전 경고된 자리) ② <b>조립 한 수</b>(이산→연속 확장, 조건 붕괴 설계, 문턱 결정 논증 — 부품은 있는데 마지막 조립 연산이 없는 경우). 전자는 물량으로, 후자는 변형 연산 추가로 해소 경로가 서로 다르다.</p>
+    <p class="pen-final">채점자 한 줄: “개념을 보는 눈은 갖췄고, 아직 안 가본 방(공간·통계)과 마지막 조립이 숙제.”</p>
+  </section>
+</div>
